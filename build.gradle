@@ -42,6 +42,7 @@ repositories {
 
 dependencies {
     compileOnly "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+    compileOnly "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion"
     compile "com.google.guava:guava:26.0-jre"
     compile "com.google.code.gson:gson:2.8.5"
     compile "org.apache.commons:commons-exec:1.3"
