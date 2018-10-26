@@ -16,8 +16,6 @@
 
 package kio
 
-import kio.SequentialArrayReader
-import kio.SequentialArrayWriter
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 

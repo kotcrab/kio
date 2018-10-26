@@ -23,6 +23,7 @@ import org.apache.commons.exec.PumpStreamHandler
 import java.io.File
 import java.net.URLDecoder
 import java.nio.charset.Charset
+import java.util.*
 
 /** @author Kotcrab */
 
@@ -80,4 +81,17 @@ fun padArray(src: ByteArray, pad: Int = 16): ByteArray {
 
 fun arrayCopy(src: ByteArray, srcPos: Int = 0, dest: ByteArray, destPos: Int = 0, length: Int = src.size) {
     System.arraycopy(src, srcPos, dest, destPos, length)
+}
+
+fun <T> MutableList<T>.swap(element1: T, element2: T) {
+    swap(indexOf(element1), indexOf(element2))
+}
+
+fun <T> MutableList<T>.swap(idx1: Int, idx2: Int) {
+    Collections.swap(this, idx1, idx2)
+}
+
+fun StringBuilder.appendLine(text: String = "", newLine: String = "\n") {
+    append(text)
+    append(newLine)
 }

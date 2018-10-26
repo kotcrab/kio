@@ -50,4 +50,33 @@ internal class PlatformUtilsTest {
         arrayCopy(src = arr1, dest = arr2, destPos = 2, length = 1)
         assertThat(arr2).containsExactly(0, 0, 0xCD, 0, 0)
     }
+
+    @Test
+    fun `should swap 2 elements using indexes`() {
+        val arr = mutableListOf(true, false)
+        arr.swap(0, 1)
+        assertThat(arr).containsExactly(false, true)
+    }
+
+    @Test
+    fun `should swap 2 elements using objects`() {
+        val arr = mutableListOf(true, false)
+        arr.swap(arr[0], arr[1])
+        assertThat(arr).containsExactly(false, true)
+    }
+
+    @Test
+    fun `should append line`() {
+        val sb = StringBuilder()
+        sb.appendLine("foo")
+        assertThat(sb.toString()).isEqualTo("foo\n")
+    }
+
+    @Test
+    fun `should append line with custom new line`() {
+        val sb = StringBuilder()
+        sb.appendLine("foo", newLine = "\r\n")
+        assertThat(sb.toString()).isEqualTo("foo\r\n")
+    }
 }
+

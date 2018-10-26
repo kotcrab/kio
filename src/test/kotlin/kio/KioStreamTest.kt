@@ -16,8 +16,6 @@
 
 package kio
 
-import kio.KioInputStream
-import kio.KioOutputStream
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.io.ByteArrayOutputStream
