@@ -175,7 +175,7 @@ class RuntimeTypeAdapterFactory<T : Any>(
                 }
             }
         }
-        @Suppress("UNCHECKED_CAST")
+        @Suppress("UNCHECKED_CAST") // cached adapter is only created in this function
         return cachedTypeAdapter as TypeAdapter<R>
     }
 }
