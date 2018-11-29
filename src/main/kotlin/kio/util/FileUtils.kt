@@ -196,5 +196,5 @@ fun readableFileSize(size: Long): String {
     val digitGroups = (Math.log10(size.toDouble()) / Math.log10(1024.0)).toInt()
     val format = DecimalFormat("###0.#", DecimalFormatSymbols(Locale.US))
     return format.format(size / Math.pow(1024.0, digitGroups.toDouble()))
-            .replace(",", ".") + " " + units[digitGroups]
+        .replace(",", ".") + " " + units[digitGroups]
 }

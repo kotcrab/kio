@@ -31,8 +31,9 @@ internal class FileUtilsTest {
 
     @Test
     fun `should create relative nix path`() {
-        assertThat(File("/a/b/c/d.bin")
-                .toRelativeNixPath(File("/a/b"))).isEqualTo("c/d.bin")
+        assertThat(
+            File("/a/b/c/d.bin").toRelativeNixPath(File("/a/b"))
+        ).isEqualTo("c/d.bin")
     }
 
     @Test

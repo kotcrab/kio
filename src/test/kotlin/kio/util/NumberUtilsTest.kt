@@ -209,7 +209,9 @@ internal class NumberUtilsTest {
     @Test
     fun `should convert byte to bits array`() {
         assertThat(0b10001110.toByte().getBits()).containsExactly(false, true, true, true, false, false, false, true)
-        assertThat(0b00000000.toByte().getBits()).containsExactly(false, false, false, false, false, false, false, false)
+        assertThat(0b00000000.toByte().getBits()).containsExactly(
+            false, false, false, false, false, false, false, false
+        )
         assertThat(0b11111111.toByte().getBits()).containsExactly(true, true, true, true, true, true, true, true)
     }
 

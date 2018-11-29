@@ -33,13 +33,18 @@ private val shiftJisCharset = Charset.forName("Shift_JIS")
 val Charsets.WINDOWS_932: Charset
     get() = windows932Charset
 
-@Deprecated(level = DeprecationLevel.WARNING, message = "Prefer using Charsets.WINDOWS_932 to properly support IBM code page 932",
-        replaceWith = ReplaceWith("Charsets.WINDOWS_932", "kio.util.WINDOWS_932"))
+@Deprecated(
+    level = DeprecationLevel.WARNING,
+    message = "Prefer using Charsets.WINDOWS_932 to properly support IBM code page 932",
+    replaceWith = ReplaceWith("Charsets.WINDOWS_932", "kio.util.WINDOWS_932")
+)
 val Charsets.SHIFT_JIS: Charset
     get() = shiftJisCharset
 
-fun execute(executable: File, args: Array<Any> = arrayOf(), workingDirectory: File? = null, exitValue: Int = 0,
-            streamHandler: PumpStreamHandler? = null) {
+fun execute(
+    executable: File, args: Array<Any> = arrayOf(), workingDirectory: File? = null, exitValue: Int = 0,
+    streamHandler: PumpStreamHandler? = null
+) {
     val cmdLine = CommandLine(executable.absolutePath)
     args.forEachIndexed { index, _ ->
         cmdLine.addArgument("\${arg$index}")

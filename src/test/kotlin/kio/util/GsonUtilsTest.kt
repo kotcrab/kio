@@ -53,8 +53,7 @@ internal class GsonUtilsTest {
     @Test
     fun `should read json map`() {
         val arr: Map<String, String> = stdGson.fromJson("{'a': '1', 'b': '2'}")
-        assertThat(arr).containsEntry("a", "1")
-                .containsEntry("b", "2")
+        assertThat(arr).containsEntry("a", "1").containsEntry("b", "2")
     }
 
     @Test
@@ -141,7 +140,12 @@ internal class GsonUtilsTest {
         @Test
         fun `should not deserialize json with missing type field`() {
             val gson = createStdGson {
-                registerTypeAdapterFactory(runtimeTypeAdapter(Foo::class, subTypes = arrayOf(Bar::class, FooBar::class, Baz::class)))
+                registerTypeAdapterFactory(
+                    runtimeTypeAdapter(
+                        Foo::class,
+                        subTypes = arrayOf(Bar::class, FooBar::class, Baz::class)
+                    )
+                )
             }
             assertThatExceptionOfType(JsonParseException::class.java).isThrownBy {
                 gson.fromJson<Array<Foo>>("[{\"_type\":\"Bar\",\"b\":0,\"a\":0},{\"b\":0,\"a\":0}]")
@@ -170,7 +174,12 @@ internal class GsonUtilsTest {
         @Test
         fun `should serialize class hierarchy in list`() {
             val gson = createStdGson {
-                registerTypeAdapterFactory(runtimeTypeAdapter(Foo::class, subTypes = arrayOf(Bar::class, FooBar::class, Baz::class)))
+                registerTypeAdapterFactory(
+                    runtimeTypeAdapter(
+                        Foo::class,
+                        subTypes = arrayOf(Bar::class, FooBar::class, Baz::class)
+                    )
+                )
             }
             val objList = listOf(Bar(), FooBar(), Baz())
             val json = gson.toJson(objList)
@@ -183,7 +192,12 @@ internal class GsonUtilsTest {
         @Test
         fun `should serialize class hierarchy in array`() {
             val gson = createStdGson {
-                registerTypeAdapterFactory(runtimeTypeAdapter(Foo::class, subTypes = arrayOf(Bar::class, FooBar::class, Baz::class)))
+                registerTypeAdapterFactory(
+                    runtimeTypeAdapter(
+                        Foo::class,
+                        subTypes = arrayOf(Bar::class, FooBar::class, Baz::class)
+                    )
+                )
             }
             val objList = arrayOf(Bar(), FooBar(), Baz())
             val json = gson.toJson(objList)

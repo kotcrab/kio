@@ -32,7 +32,11 @@ import kotlin.reflect.KClass
 
 val stdGson = createStdGson()
 
-fun createStdGson(prettyPrint: Boolean = true, byteArrayAsBase64: Boolean = true, configure: GsonBuilder.() -> Unit = {}): Gson {
+fun createStdGson(
+    prettyPrint: Boolean = true,
+    byteArrayAsBase64: Boolean = true,
+    configure: GsonBuilder.() -> Unit = {}
+): Gson {
     val builder = GsonBuilder()
     if (prettyPrint) {
         builder.setPrettyPrinting()
@@ -71,9 +75,11 @@ inline fun <reified T> File.readJson(gson: Gson = stdGson): T {
     return bufferedReader().use { gson.fromJson(it) }
 }
 
-fun <C : Any> runtimeTypeAdapter(base: KClass<C>,
-                                 subTypes: Array<KClass<out C>>,
-                                 legacySubTypes: Array<Pair<String, KClass<out C>>> = emptyArray()): RuntimeTypeAdapterFactory<C> {
+fun <C : Any> runtimeTypeAdapter(
+    base: KClass<C>,
+    subTypes: Array<KClass<out C>>,
+    legacySubTypes: Array<Pair<String, KClass<out C>>> = emptyArray()
+): RuntimeTypeAdapterFactory<C> {
     val adapter = RuntimeTypeAdapterFactory(base, "_type")
     subTypes.forEach { subClass ->
         adapter.registerSubtype(subClass)
@@ -85,8 +91,8 @@ fun <C : Any> runtimeTypeAdapter(base: KClass<C>,
 }
 
 class RuntimeTypeAdapterFactory<T : Any>(
-        private val baseType: KClass<T>,
-        private val typeFieldName: String = "_type"
+    private val baseType: KClass<T>,
+    private val typeFieldName: String = "_type"
 ) : TypeAdapterFactory {
     private val labelToSubtype = mutableMapOf<String, KClass<out T>>()
     private val legacyLabelToSubtype = mutableMapOf<String, KClass<out T>>()
@@ -140,13 +146,15 @@ class RuntimeTypeAdapterFactory<T : Any>(
                     val label = subtypeToLabel[srcType]
                     @Suppress("UNCHECKED_CAST") // registration requires that subtype extends T
                     val delegate = subtypeToDelegate[srcType] as TypeAdapter<R>?
-                            ?: throw JsonParseException("cannot serialize ${srcType.simpleName}, did you forget to " +
-                                    "register a subtype?")
+                        ?: throw JsonParseException(
+                            "cannot serialize ${srcType.simpleName}, did you forget to register a subtype?"
+                        )
                     val jsonObject = delegate.toJsonTree(value).asJsonObject
                     val clone = JsonObject()
                     if (jsonObject.has(typeFieldName)) {
-                        throw JsonParseException("cannot serialize ${srcType.simpleName} because it already defined " +
-                                "a field names $typeFieldName")
+                        throw JsonParseException(
+                            "cannot serialize ${srcType.simpleName} because it already defined a field names $typeFieldName"
+                        )
                     }
                     clone.add(typeFieldName, JsonPrimitive(label))
                     jsonObject.entrySet().forEach { (key, value) ->
@@ -158,8 +166,9 @@ class RuntimeTypeAdapterFactory<T : Any>(
                 override fun read(input: JsonReader): R {
                     val jsonElement = Streams.parse(input)
                     val labelJsonElement = jsonElement.asJsonObject.remove(typeFieldName)
-                            ?: throw JsonParseException("cannot deserialize $baseType because it does not define " +
-                                    "a field named $typeFieldName")
+                        ?: throw JsonParseException(
+                            "cannot deserialize $baseType because it does not define a field named $typeFieldName"
+                        )
                     val label = labelJsonElement.asString
                     @Suppress("UNCHECKED_CAST") // registration requires that subtype extends T
                     var delegate = labelToDelegate[label] as TypeAdapter<R>?
@@ -167,8 +176,9 @@ class RuntimeTypeAdapterFactory<T : Any>(
                         @Suppress("UNCHECKED_CAST") // registration requires that subtype extends T
                         delegate = legacyLabelToDelegate[label] as TypeAdapter<R>?
                         if (delegate == null) {
-                            throw JsonParseException("cannot deserialize $baseType subtype named $label, " +
-                                    "did you forget to register a subtype?")
+                            throw JsonParseException(
+                                "cannot deserialize $baseType subtype named $label, did you forget to register a subtype?"
+                            )
                         }
                     }
                     return delegate.fromJsonTree(jsonElement)
