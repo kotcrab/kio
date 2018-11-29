@@ -9,32 +9,11 @@ buildscript {
     }
 }
 
-plugins {
-    id 'io.codearte.nexus-staging' version '0.11.0'
-}
-
 group 'com.kotcrab.kio'
 version '1.0-SNAPSHOT'
 
 apply plugin: 'kotlin'
 apply from: 'deploy.gradle'
-
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            pom.project {
-                name 'kio'
-                artifactId 'kio'
-                packaging 'jar'
-                description 'Collection of Kotlin utilities'
-            }
-        }
-    }
-}
-
-nexusStaging {
-    packageGroup = "com.kotcrab"
-}
 
 repositories {
     mavenCentral()
