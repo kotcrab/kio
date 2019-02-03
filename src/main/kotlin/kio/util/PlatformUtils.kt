@@ -21,6 +21,8 @@ import org.apache.commons.exec.CommandLine
 import org.apache.commons.exec.DefaultExecutor
 import org.apache.commons.exec.PumpStreamHandler
 import java.io.File
+import java.io.InputStream
+import java.io.PrintStream
 import java.net.URLDecoder
 import java.nio.charset.Charset
 import java.util.*
@@ -63,6 +65,8 @@ fun execute(
 
 fun nullStreamHandler() = PumpStreamHandler(ByteStreams.nullOutputStream(), ByteStreams.nullOutputStream())
 
+fun stdoutStreamHandler() = PumpStreamHandler(stdout, stdout)
+
 fun getJarPath(caller: Class<*>): String {
     val url = caller.protectionDomain.codeSource.location
     var path = URLDecoder.decode(url.file, "UTF-8")
@@ -100,3 +104,21 @@ fun StringBuilder.appendLine(text: String = "", newLine: String = "\n") {
     append(text)
     append(newLine)
 }
+
+var stdin: InputStream
+    get() = System.`in`
+    set(s) {
+        System.setIn(s)
+    }
+
+var stdout: PrintStream
+    get() = System.out
+    set(s) {
+        System.setOut(s)
+    }
+
+var stderr: PrintStream
+    get() = System.err
+    set(s) {
+        System.setErr(s)
+    }
