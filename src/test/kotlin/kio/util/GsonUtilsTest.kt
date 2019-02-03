@@ -74,6 +74,33 @@ internal class GsonUtilsTest {
     }
 
     @Test
+    fun `should provide from default block when json file does not exist`() {
+        val file = createTempFile()
+        file.delete()
+        assertThat(file.exists()).isFalse()
+        val num = file.readJsonOrElse(default = { 42 })
+        assertThat(num).isEqualTo(42)
+    }
+
+    @Test
+    fun `should provide default when json file does not exist`() {
+        val file = createTempFile()
+        file.delete()
+        assertThat(file.exists()).isFalse()
+        val num = file.readJsonOrDefault(default = 42)
+        assertThat(num).isEqualTo(42)
+    }
+
+    @Test
+    fun `should provide null when json file does not exist`() {
+        val file = createTempFile()
+        file.delete()
+        assertThat(file.exists()).isFalse()
+        val num = file.readJsonOrNull<Int>()
+        assertThat(num).isNull()
+    }
+
+    @Test
     fun `should handle byte array as base64`() {
         val gson = createStdGson(byteArrayAsBase64 = true)
         val str = gson.toJson(byteArrayOf(0, 1, 2, 3))

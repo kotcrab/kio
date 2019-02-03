@@ -75,6 +75,30 @@ inline fun <reified T> File.readJson(gson: Gson = stdGson): T {
     return bufferedReader().use { gson.fromJson(it) }
 }
 
+inline fun <reified T> File.readJsonOrElse(gson: Gson = stdGson, default: () -> T): T {
+    return if (exists()) {
+        bufferedReader().use { gson.fromJson<T>(it) }
+    } else {
+        default()
+    }
+}
+
+inline fun <reified T> File.readJsonOrDefault(gson: Gson = stdGson, default: T): T {
+    return if (exists()) {
+        bufferedReader().use { gson.fromJson<T>(it) }
+    } else {
+        default
+    }
+}
+
+inline fun <reified T> File.readJsonOrNull(gson: Gson = stdGson): T? {
+    return if (exists()) {
+        bufferedReader().use { gson.fromJson<T>(it) }
+    } else {
+        null
+    }
+}
+
 fun <C : Any> runtimeTypeAdapter(
     base: KClass<C>,
     subTypes: Array<KClass<out C>>,
