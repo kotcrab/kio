@@ -83,6 +83,14 @@ private fun LERandomAccessFile.readString(size: Int, charset: Charset = Charsets
     return readBytes(size).toString(charset)
 }
 
+private fun RandomAccessFile.writeString(string: String, charset: Charset = Charsets.UTF_8) {
+    write(string.toByteArray(charset))
+}
+
+private fun LERandomAccessFile.writeString(string: String, charset: Charset = Charsets.UTF_8) {
+    write(string.toByteArray(charset))
+}
+
 fun RandomAccessFile.readNullTerminatedString(charset: Charset = Charsets.US_ASCII): String {
     val out = ByteArrayOutputStream()
     while (true) {
@@ -101,6 +109,16 @@ fun LERandomAccessFile.readNullTerminatedString(charset: Charset = Charsets.US_A
         out.write(byte)
     }
     return String(out.toByteArray(), charset)
+}
+
+private fun RandomAccessFile.writeNullTerminatedString(string: String, charset: Charset = Charsets.UTF_8) {
+    writeString(string, charset)
+    writeByte(0)
+}
+
+private fun LERandomAccessFile.writeNullTerminatedString(string: String, charset: Charset = Charsets.UTF_8) {
+    writeString(string, charset)
+    writeByte(0)
 }
 
 fun RandomAccessFile.readBytes(n: Int): ByteArray {
