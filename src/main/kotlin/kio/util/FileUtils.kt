@@ -75,19 +75,19 @@ fun LERandomAccessFile.align(pad: Long) {
     write(ByteArray((targetCount - length()).toInt()))
 }
 
-private fun RandomAccessFile.readString(size: Int, charset: Charset = Charsets.UTF_8): String {
+fun RandomAccessFile.readString(size: Int, charset: Charset = Charsets.UTF_8): String {
     return readBytes(size).toString(charset)
 }
 
-private fun LERandomAccessFile.readString(size: Int, charset: Charset = Charsets.UTF_8): String {
+fun LERandomAccessFile.readString(size: Int, charset: Charset = Charsets.UTF_8): String {
     return readBytes(size).toString(charset)
 }
 
-private fun RandomAccessFile.writeString(string: String, charset: Charset = Charsets.UTF_8) {
+fun RandomAccessFile.writeString(string: String, charset: Charset = Charsets.UTF_8) {
     write(string.toByteArray(charset))
 }
 
-private fun LERandomAccessFile.writeString(string: String, charset: Charset = Charsets.UTF_8) {
+fun LERandomAccessFile.writeString(string: String, charset: Charset = Charsets.UTF_8) {
     write(string.toByteArray(charset))
 }
 
@@ -111,12 +111,12 @@ fun LERandomAccessFile.readNullTerminatedString(charset: Charset = Charsets.US_A
     return String(out.toByteArray(), charset)
 }
 
-private fun RandomAccessFile.writeNullTerminatedString(string: String, charset: Charset = Charsets.UTF_8) {
+fun RandomAccessFile.writeNullTerminatedString(string: String, charset: Charset = Charsets.UTF_8) {
     writeString(string, charset)
     writeByte(0)
 }
 
-private fun LERandomAccessFile.writeNullTerminatedString(string: String, charset: Charset = Charsets.UTF_8) {
+fun LERandomAccessFile.writeNullTerminatedString(string: String, charset: Charset = Charsets.UTF_8) {
     writeString(string, charset)
     writeByte(0)
 }
