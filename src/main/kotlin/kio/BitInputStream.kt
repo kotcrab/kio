@@ -48,7 +48,7 @@ class BitInputStream(private val bytes: ByteArray, private val msbOrder: Boolean
 
     fun readByte(): Byte {
         var value = 0
-        repeat(8) { it ->
+        repeat(8) {
             value = value or (readBit().toInt() shl (7 - it))
         }
         return value.toByte()
@@ -57,7 +57,7 @@ class BitInputStream(private val bytes: ByteArray, private val msbOrder: Boolean
     fun readInt(bits: Int = 32): Int {
         if (bits > 32) error("bits must be <=32")
         var value = 0
-        repeat(bits) { it ->
+        repeat(bits) {
             value = value or (readBit().toInt() shl (bits - 1 - it))
         }
         return value

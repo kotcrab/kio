@@ -26,6 +26,8 @@ import java.nio.file.Paths
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.util.*
+import kotlin.math.log10
+import kotlin.math.pow
 
 
 /** @author Kotcrab */
@@ -48,7 +50,7 @@ fun File.relativizePath(base: File): String {
 }
 
 fun walkDir(dir: File, processFile: (File) -> Unit, errorHandler: (File, Exception) -> Unit = { _, e -> throw(e) }) {
-    dir.listFiles().forEach {
+    dir.listFiles()!!.forEach {
         if (it.isFile) {
             try {
                 processFile(it)
@@ -71,6 +73,34 @@ fun LERandomAccessFile.align(pad: Long) {
     if (length() % pad == 0L) return
     val targetCount = (length() / pad + 1) * pad
     write(ByteArray((targetCount - length()).toInt()))
+}
+
+private fun RandomAccessFile.readString(size: Int, charset: Charset = Charsets.UTF_8): String {
+    return readBytes(size).toString(charset)
+}
+
+private fun LERandomAccessFile.readString(size: Int, charset: Charset = Charsets.UTF_8): String {
+    return readBytes(size).toString(charset)
+}
+
+fun RandomAccessFile.readNullTerminatedString(charset: Charset = Charsets.US_ASCII): String {
+    val out = ByteArrayOutputStream()
+    while (true) {
+        val byte = readByte().toInt()
+        if (byte == 0) break
+        out.write(byte)
+    }
+    return String(out.toByteArray(), charset)
+}
+
+fun LERandomAccessFile.readNullTerminatedString(charset: Charset = Charsets.US_ASCII): String {
+    val out = ByteArrayOutputStream()
+    while (true) {
+        val byte = readByte().toInt()
+        if (byte == 0) break
+        out.write(byte)
+    }
+    return String(out.toByteArray(), charset)
 }
 
 fun RandomAccessFile.readBytes(n: Int): ByteArray {
@@ -193,8 +223,8 @@ fun readableFileSize(size: Long): String {
     val units = arrayOf("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB")
     if (size == 0L) return "0 B"
     if (size < 0L) throw IllegalArgumentException("size can't be <0")
-    val digitGroups = (Math.log10(size.toDouble()) / Math.log10(1024.0)).toInt()
+    val digitGroups = (log10(size.toDouble()) / log10(1024.0)).toInt()
     val format = DecimalFormat("###0.#", DecimalFormatSymbols(Locale.US))
-    return format.format(size / Math.pow(1024.0, digitGroups.toDouble()))
+    return format.format(size / 1024.0.pow(digitGroups.toDouble()))
         .replace(",", ".") + " " + units[digitGroups]
 }

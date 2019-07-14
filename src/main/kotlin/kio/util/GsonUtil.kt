@@ -59,9 +59,9 @@ private class ByteArrayAsBase64TypeAdapter : JsonSerializer<ByteArray>, JsonDese
     }
 }
 
-inline fun <reified T> Gson.fromJson(reader: Reader) = this.fromJson<T>(reader, object : TypeToken<T>() {}.type)
+inline fun <reified T> Gson.fromJson(reader: Reader): T = this.fromJson(reader, object : TypeToken<T>() {}.type)
 
-inline fun <reified T> Gson.fromJson(json: String) = this.fromJson<T>(json, object : TypeToken<T>() {}.type)
+inline fun <reified T> Gson.fromJson(json: String): T = this.fromJson(json, object : TypeToken<T>() {}.type)
 
 fun File.writeJson(src: Any) {
     writeJson(stdGson, src)
@@ -155,12 +155,12 @@ class RuntimeTypeAdapterFactory<T : Any>(
             val labelToDelegate = mutableMapOf<String, TypeAdapter<out T>>()
             val legacyLabelToDelegate = mutableMapOf<String, TypeAdapter<out T>>()
             val subtypeToDelegate = mutableMapOf<KClass<out T>, TypeAdapter<out T>>()
-            labelToSubtype.forEach { label, subtype ->
+            labelToSubtype.forEach { (label, subtype) ->
                 val delegate = gson.getDelegateAdapter(this, TypeToken.get(subtype.java))
                 labelToDelegate[label] = delegate
                 subtypeToDelegate[subtype] = delegate
             }
-            legacyLabelToSubtype.forEach { label, subtype ->
+            legacyLabelToSubtype.forEach { (label, subtype) ->
                 val delegate = gson.getDelegateAdapter(this, TypeToken.get(subtype.java))
                 legacyLabelToDelegate[label] = delegate
             }

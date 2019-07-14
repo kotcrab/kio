@@ -63,6 +63,7 @@ fun execute(
     executor.execute(cmdLine)
 }
 
+@Suppress("UnstableApiUsage")
 fun nullStreamHandler() = PumpStreamHandler(ByteStreams.nullOutputStream(), ByteStreams.nullOutputStream())
 
 fun stdoutStreamHandler() = PumpStreamHandler(stdout, stdout)

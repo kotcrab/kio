@@ -16,10 +16,7 @@
 
 package kio
 
-import java.io.DataInput
-import java.io.DataOutput
-import java.io.File
-import java.io.RandomAccessFile
+import java.io.*
 
 /** @author Kotcrab */
 
@@ -30,7 +27,7 @@ class LERandomAccessFile(file: File, mode: String) : DataInput, DataOutput {
 
     private var raf = RandomAccessFile(file, mode)
 
-    val fd
+    val fd: FileDescriptor
         get() = raf.fd
 
     val filePointer
