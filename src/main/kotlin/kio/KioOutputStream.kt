@@ -70,8 +70,9 @@ class KioOutputStream(private val outputStream: OutputStream, littleEndian: Bool
     }
 
     fun writeString(string: String, length: Int = string.length, charset: Charset = Charsets.UTF_8) {
-        output.write(string.toByteArray(charset))
-        writeNullBytes(length - string.length)
+        val bytes = string.toByteArray(charset)
+        output.write(bytes)
+        writeNullBytes(length - bytes.size)
     }
 
     fun writeNullBytes(count: Int) {
