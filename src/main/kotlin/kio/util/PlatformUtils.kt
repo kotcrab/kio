@@ -44,27 +44,27 @@ val Charsets.SHIFT_JIS: Charset
     get() = shiftJisCharset
 
 fun execute(
-    executable: File, args: Array<Any> = arrayOf(), workingDirectory: File? = null, exitValue: Int = 0,
+    executable: File, args: Array<*> = emptyArray<Any>(), workingDirectory: File? = null, exitValue: Int = 0,
     streamHandler: PumpStreamHandler? = null
 ) {
     execute(CommandLine(executable.absolutePath), args, workingDirectory, exitValue, streamHandler)
 }
 
 fun execute(
-    executable: String, args: Array<Any> = arrayOf(), workingDirectory: File? = null, exitValue: Int = 0,
+    executable: String, args: Array<*> = emptyArray<Any>(), workingDirectory: File? = null, exitValue: Int = 0,
     streamHandler: PumpStreamHandler? = null
 ) {
     execute(CommandLine(executable), args, workingDirectory, exitValue, streamHandler)
 }
 
 private fun execute(
-    cmdLine: CommandLine, args: Array<Any> = arrayOf(), workingDirectory: File? = null, exitValue: Int = 0,
+    cmdLine: CommandLine, args: Array<*> = emptyArray<Any>(), workingDirectory: File? = null, exitValue: Int = 0,
     streamHandler: PumpStreamHandler? = null
 ) {
     args.forEachIndexed { index, _ ->
         cmdLine.addArgument("\${arg$index}")
     }
-    val map = mutableMapOf<String, Any>()
+    val map = mutableMapOf<String, Any?>()
     args.forEachIndexed { index, arg ->
         map["arg$index"] = arg
     }
