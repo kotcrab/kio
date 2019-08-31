@@ -21,7 +21,7 @@ import org.junit.jupiter.api.Test
 
 /** @author Kotcrab */
 
-internal class SequentialArrayReaderTest {
+class SequentialArrayReaderTest {
     val bytes = byteArrayOf(0, 1, 2, 3)
 
     @Test
@@ -46,7 +46,7 @@ internal class SequentialArrayReaderTest {
     }
 }
 
-internal class SequentialArrayWriterTest {
+class SequentialArrayWriterTest {
     @Test
     fun `should write bytes`() {
         val bytes = ByteArray(4)

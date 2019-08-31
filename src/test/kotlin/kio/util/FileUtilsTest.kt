@@ -23,7 +23,7 @@ import java.io.File
 
 /** @author Kotcrab */
 
-internal class FileUtilsTest {
+class FileUtilsTest {
     @Test
     fun `should create child file`() {
         assertThat(File("a", "b")).isEqualTo(File("a").child("b"))

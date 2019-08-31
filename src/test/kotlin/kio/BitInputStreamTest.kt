@@ -21,7 +21,7 @@ import org.junit.jupiter.api.Test
 
 /** @author Kotcrab */
 
-internal class BitInputStreamTest {
+class BitInputStreamTest {
     private val testBytes = byteArrayOf(0b01100001, 0b01111111, 0b00000000, 0b01101000)
 
     @Test

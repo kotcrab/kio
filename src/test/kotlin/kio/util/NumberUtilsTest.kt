@@ -22,7 +22,7 @@ import org.junit.jupiter.api.Test
 
 /** @author Kotcrab */
 
-internal class NumberUtilsTest {
+class NumberUtilsTest {
     @Test
     fun `should convert boolean to int`() {
         assertThat(false.toInt()).isEqualTo(0)

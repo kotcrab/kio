@@ -24,7 +24,7 @@ import java.io.StringReader
 
 /** @author Kotcrab */
 
-internal class GsonUtilsTest {
+class GsonUtilsTest {
     @Test
     fun `should call configure block`() {
         var called = false

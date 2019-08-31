@@ -24,7 +24,7 @@ import java.io.PipedOutputStream
 
 /** @author Kotcrab */
 
-internal class KioStreamTest {
+class KioStreamTest {
     private val sink = PipedInputStream()
     private val output = KioOutputStream(PipedOutputStream(sink), true)
     private val input = KioInputStream(sink, Long.MAX_VALUE, true)

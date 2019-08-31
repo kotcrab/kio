@@ -21,7 +21,7 @@ import org.junit.jupiter.api.Test
 
 /** @author Kotcrab */
 
-internal class PlatformUtilsTest {
+class PlatformUtilsTest {
     @Test
     fun `should pad array`() {
         assertThat(padArray(ByteArray(0), 4)).hasSize(0)

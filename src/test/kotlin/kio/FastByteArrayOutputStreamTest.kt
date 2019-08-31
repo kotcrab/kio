@@ -21,7 +21,7 @@ import org.junit.jupiter.api.Test
 
 /** @author Kotcrab */
 
-internal class FastByteArrayOutputStreamTest {
+class FastByteArrayOutputStreamTest {
     @Test
     fun `should return byte at pos`() {
         val baos = FastByteArrayOutputStream()
