@@ -38,7 +38,7 @@ class FileUtilsTest {
 
     @Test
     fun `should create relative path`() {
-        assertThat(File("C:\\a\\b\\c.bin").relativizePath(File("C:\\a\\b"))).isEqualTo("c.bin")
+        assertThat(File("\\a\\b\\c.bin").relativizePath(File("\\a\\b"))).isEqualTo("c.bin")
     }
 
     @Test
