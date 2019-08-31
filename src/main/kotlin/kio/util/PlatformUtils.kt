@@ -47,7 +47,20 @@ fun execute(
     executable: File, args: Array<Any> = arrayOf(), workingDirectory: File? = null, exitValue: Int = 0,
     streamHandler: PumpStreamHandler? = null
 ) {
-    val cmdLine = CommandLine(executable.absolutePath)
+    execute(CommandLine(executable.absolutePath), args, workingDirectory, exitValue, streamHandler)
+}
+
+fun execute(
+    executable: String, args: Array<Any> = arrayOf(), workingDirectory: File? = null, exitValue: Int = 0,
+    streamHandler: PumpStreamHandler? = null
+) {
+    execute(CommandLine(executable), args, workingDirectory, exitValue, streamHandler)
+}
+
+private fun execute(
+    cmdLine: CommandLine, args: Array<Any> = arrayOf(), workingDirectory: File? = null, exitValue: Int = 0,
+    streamHandler: PumpStreamHandler? = null
+) {
     args.forEachIndexed { index, _ ->
         cmdLine.addArgument("\${arg$index}")
     }
