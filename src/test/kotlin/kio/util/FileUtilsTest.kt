@@ -19,6 +19,8 @@ package kio.util
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.condition.EnabledOnOs
+import org.junit.jupiter.api.condition.OS
 import java.io.File
 
 /** @author Kotcrab */
@@ -37,8 +39,9 @@ class FileUtilsTest {
     }
 
     @Test
-    fun `should create relative path`() {
-        assertThat(File("\\a\\b\\c.bin").relativizePath(File("\\a\\b"))).isEqualTo("c.bin")
+    @EnabledOnOs(OS.WINDOWS)
+    fun `should create relative win path`() {
+        assertThat(File("C:\\a\\b\\c.bin").relativizePath(File("C:\\a\\b"))).isEqualTo("c.bin")
     }
 
     @Test
