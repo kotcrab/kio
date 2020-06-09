@@ -25,7 +25,7 @@ import java.io.InputStream
 import java.io.PrintStream
 import java.net.URLDecoder
 import java.nio.charset.Charset
-import java.util.*
+import java.util.Collections
 
 /** @author Kotcrab */
 
@@ -44,21 +44,33 @@ val Charsets.SHIFT_JIS: Charset
     get() = shiftJisCharset
 
 fun execute(
-    executable: File, args: Array<*> = emptyArray<Any>(), workingDirectory: File? = null, exitValue: Int = 0,
+    executable: File,
+    args: List<*> = emptyList<Any>(),
+    environment: Map<String, String> = emptyMap(),
+    workingDirectory: File? = null,
+    exitValue: Int = 0,
     streamHandler: PumpStreamHandler? = null
 ) {
-    execute(CommandLine(executable.absolutePath), args, workingDirectory, exitValue, streamHandler)
+    execute(CommandLine(executable.absolutePath), args, environment, workingDirectory, exitValue, streamHandler)
 }
 
 fun execute(
-    executable: String, args: Array<*> = emptyArray<Any>(), workingDirectory: File? = null, exitValue: Int = 0,
+    executable: String,
+    args: List<*> = emptyList<Any>(),
+    environment: Map<String, String> = emptyMap(),
+    workingDirectory: File? = null,
+    exitValue: Int = 0,
     streamHandler: PumpStreamHandler? = null
 ) {
-    execute(CommandLine(executable), args, workingDirectory, exitValue, streamHandler)
+    execute(CommandLine(executable), args, environment, workingDirectory, exitValue, streamHandler)
 }
 
 private fun execute(
-    cmdLine: CommandLine, args: Array<*> = emptyArray<Any>(), workingDirectory: File? = null, exitValue: Int = 0,
+    cmdLine: CommandLine,
+    args: List<*> = emptyList<Any>(),
+    environment: Map<String, String> = emptyMap(),
+    workingDirectory: File? = null,
+    exitValue: Int = 0,
     streamHandler: PumpStreamHandler? = null
 ) {
     args.forEachIndexed { index, _ ->
@@ -73,7 +85,7 @@ private fun execute(
     if (workingDirectory != null) executor.workingDirectory = workingDirectory
     if (streamHandler != null) executor.streamHandler = streamHandler
     executor.setExitValue(exitValue)
-    executor.execute(cmdLine)
+    executor.execute(cmdLine, environment)
 }
 
 @Suppress("UnstableApiUsage")
