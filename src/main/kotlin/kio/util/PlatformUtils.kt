@@ -46,7 +46,7 @@ val Charsets.SHIFT_JIS: Charset
 fun execute(
     executable: File,
     args: List<*> = emptyList<Any>(),
-    environment: Map<String, String> = emptyMap(),
+    environment: Map<String, String>? = null,
     workingDirectory: File? = null,
     exitValue: Int = 0,
     streamHandler: PumpStreamHandler? = null
@@ -57,7 +57,7 @@ fun execute(
 fun execute(
     executable: String,
     args: List<*> = emptyList<Any>(),
-    environment: Map<String, String> = emptyMap(),
+    environment: Map<String, String>? = null,
     workingDirectory: File? = null,
     exitValue: Int = 0,
     streamHandler: PumpStreamHandler? = null
@@ -68,7 +68,7 @@ fun execute(
 private fun execute(
     cmdLine: CommandLine,
     args: List<*> = emptyList<Any>(),
-    environment: Map<String, String> = emptyMap(),
+    environment: Map<String, String>? = null,
     workingDirectory: File? = null,
     exitValue: Int = 0,
     streamHandler: PumpStreamHandler? = null
