@@ -16,11 +16,16 @@
 
 package kio
 
-import java.io.*
+import java.io.Closeable
+import java.io.DataInput
+import java.io.DataOutput
+import java.io.File
+import java.io.FileDescriptor
+import java.io.RandomAccessFile
 
 /** @author Kotcrab */
 
-class LERandomAccessFile(file: File, mode: String) : DataInput, DataOutput {
+class LERandomAccessFile(file: File, mode: String) : DataInput, DataOutput, Closeable {
     constructor(file: File) : this(file, "rw")
     constructor(path: String) : this(File(path), "rw")
     constructor(path: String, mode: String) : this(File(path), mode)
@@ -41,7 +46,7 @@ class LERandomAccessFile(file: File, mode: String) : DataInput, DataOutput {
         raf.setLength(newLength)
     }
 
-    fun close() {
+    override fun close() {
         raf.close()
     }
 
