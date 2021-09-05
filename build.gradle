@@ -13,10 +13,23 @@ group 'com.kotcrab.kio'
 version '1.0-SNAPSHOT'
 
 apply plugin: 'kotlin'
+apply plugin: 'java-library'
 apply plugin: 'maven-publish'
 
 repositories {
     mavenCentral()
+}
+
+java {
+    withSourcesJar()
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+        }
+    }
 }
 
 compileKotlin {
