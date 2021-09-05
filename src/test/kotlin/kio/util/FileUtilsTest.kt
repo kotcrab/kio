@@ -1,6 +1,4 @@
 /*
- * Copyright 2017-2018 See AUTHORS file.
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -22,8 +20,6 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.condition.EnabledOnOs
 import org.junit.jupiter.api.condition.OS
 import java.io.File
-
-/** @author Kotcrab */
 
 class FileUtilsTest {
     @Test
@@ -57,8 +53,8 @@ class FileUtilsTest {
         assertThat(readableFileSize(1000)).isEqualTo("1000 B")
         assertThat(readableFileSize(1010)).isEqualTo("1010 B")
         assertThat(readableFileSize(1024)).isEqualTo("1 KB")
-        assertThat(readableFileSize(1024 * 1024)).isEqualTo("1 MB")
-        assertThat(readableFileSize(1024 * 1024 * 1024)).isEqualTo("1 GB")
-        assertThat(readableFileSize(1024 + 512)).isEqualTo("1.5 KB")
+        assertThat(readableFileSize(1024L * 1024)).isEqualTo("1 MB")
+        assertThat(readableFileSize(1024L * 1024 * 1024)).isEqualTo("1 GB")
+        assertThat(readableFileSize(1024L + 512)).isEqualTo("1.5 KB")
     }
 }

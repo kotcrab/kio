@@ -1,6 +1,4 @@
 /*
- * Copyright 2017-2018 See AUTHORS file.
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -17,12 +15,13 @@
 package kio.util
 
 import com.google.gson.JsonParseException
-import org.assertj.core.api.Assertions.*
+import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatExceptionOfType
+import org.assertj.core.api.Assertions.assertThatIllegalStateException
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import java.io.File
 import java.io.StringReader
-
-/** @author Kotcrab */
 
 class GsonUtilsTest {
     @Test
@@ -64,7 +63,7 @@ class GsonUtilsTest {
 
     @Test
     fun `should write and read json to file`() {
-        val file = createTempFile()
+        val file = File.createTempFile("tmp", ".json")
         val arr = arrayOf("a", "b", "c")
         file.writeJson(arr)
         assertThat(file.length()).isNotZero()
@@ -75,7 +74,7 @@ class GsonUtilsTest {
 
     @Test
     fun `should provide from default block when json file does not exist`() {
-        val file = createTempFile()
+        val file = File.createTempFile("tmp", ".json")
         file.delete()
         assertThat(file.exists()).isFalse()
         val num = file.readJsonOrElse(default = { 42 })
@@ -84,7 +83,7 @@ class GsonUtilsTest {
 
     @Test
     fun `should provide default when json file does not exist`() {
-        val file = createTempFile()
+        val file = File.createTempFile("tmp", ".json")
         file.delete()
         assertThat(file.exists()).isFalse()
         val num = file.readJsonOrDefault(default = 42)
@@ -93,7 +92,7 @@ class GsonUtilsTest {
 
     @Test
     fun `should provide null when json file does not exist`() {
-        val file = createTempFile()
+        val file = File.createTempFile("tmp", ".json")
         file.delete()
         assertThat(file.exists()).isFalse()
         val num = file.readJsonOrNull<Int>()

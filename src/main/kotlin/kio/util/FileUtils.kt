@@ -1,6 +1,4 @@
 /*
- * Copyright 2017-2018 See AUTHORS file.
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -25,12 +23,9 @@ import java.nio.charset.Charset
 import java.nio.file.Paths
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
-import java.util.*
+import java.util.Locale
 import kotlin.math.log10
 import kotlin.math.pow
-
-
-/** @author Kotcrab */
 
 fun File.child(name: String): File {
     return File(this, name)
@@ -173,18 +168,28 @@ fun DataInput.readNullTerminatedString(charset: Charset = Charsets.US_ASCII): St
     return String(out.toByteArray(), charset)
 }
 
-fun RandomAccessFile.temporaryJump(addr: Int, reader: (RandomAccessFile) -> Unit) {
-    val lastPos = filePointer
-    seek(addr)
-    reader(this)
-    seek(lastPos)
+fun <T> RandomAccessFile.temporaryJump(addr: Int, reader: (RandomAccessFile) -> T): T {
+    return temporaryJump(addr.toLong(), reader)
 }
 
-fun LERandomAccessFile.temporaryJump(addr: Int, reader: (LERandomAccessFile) -> Unit) {
+fun <T> RandomAccessFile.temporaryJump(addr: Long, reader: (RandomAccessFile) -> T): T {
     val lastPos = filePointer
     seek(addr)
-    reader(this)
+    val result = reader(this)
     seek(lastPos)
+    return result
+}
+
+fun <T> LERandomAccessFile.temporaryJump(addr: Int, reader: (LERandomAccessFile) -> T): T {
+    return temporaryJump(addr.toLong(), reader)
+}
+
+fun <T> LERandomAccessFile.temporaryJump(addr: Long, reader: (LERandomAccessFile) -> T): T {
+    val lastPos = filePointer
+    seek(addr)
+    val result = reader(this)
+    seek(lastPos)
+    return result
 }
 
 fun RandomAccessFile.seek(pos: Int) {

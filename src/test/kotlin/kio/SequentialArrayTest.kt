@@ -1,6 +1,4 @@
 /*
- * Copyright 2017-2018 See AUTHORS file.
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -19,10 +17,8 @@ package kio
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-/** @author Kotcrab */
-
 class SequentialArrayReaderTest {
-    val bytes = byteArrayOf(0, 1, 2, 3)
+    private val bytes = byteArrayOf(0, 1, 2, 3)
 
     @Test
     fun `should read bytes`() {

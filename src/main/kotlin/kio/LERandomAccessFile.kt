@@ -1,6 +1,4 @@
 /*
- * Copyright 2017-2018 See AUTHORS file.
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -22,8 +20,6 @@ import java.io.DataOutput
 import java.io.File
 import java.io.FileDescriptor
 import java.io.RandomAccessFile
-
-/** @author Kotcrab */
 
 class LERandomAccessFile(file: File, mode: String) : DataInput, DataOutput, Closeable {
     constructor(file: File) : this(file, "rw")
@@ -207,7 +203,7 @@ class LERandomAccessFile(file: File, mode: String) : DataInput, DataOutput, Clos
     }
 
     override fun writeChars(s: String) {
-        s.toCharArray().forEach { writeChar(it.toInt()) }
+        s.toCharArray().forEach { writeChar(it.code) }
     }
 
     @Deprecated("Use some other method for writing strings", level = DeprecationLevel.ERROR)

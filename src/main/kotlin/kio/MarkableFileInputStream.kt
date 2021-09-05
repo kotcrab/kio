@@ -1,6 +1,4 @@
 /*
- * Copyright 2017-2018 See AUTHORS file.
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -21,9 +19,7 @@ import java.io.FilterInputStream
 import java.io.IOException
 import java.nio.channels.FileChannel
 
-/** @author Kotcrab */
-
-class MarkableFileInputStream(fis: FileInputStream) : FilterInputStream(fis) {
+internal class MarkableFileInputStream(fis: FileInputStream) : FilterInputStream(fis) {
     private val fileChannel: FileChannel = fis.channel
     private var mark: Long = -1L
 

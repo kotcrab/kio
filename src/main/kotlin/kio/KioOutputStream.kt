@@ -1,6 +1,4 @@
 /*
- * Copyright 2017-2018 See AUTHORS file.
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -18,10 +16,14 @@ package kio
 
 import com.google.common.io.CountingOutputStream
 import com.google.common.io.LittleEndianDataOutputStream
-import java.io.*
+import java.io.ByteArrayOutputStream
+import java.io.DataOutput
+import java.io.DataOutputStream
+import java.io.File
+import java.io.FileOutputStream
+import java.io.FilterOutputStream
+import java.io.OutputStream
 import java.nio.charset.Charset
-
-/** @author Kotcrab */
 
 class KioOutputStream(private val outputStream: OutputStream, littleEndian: Boolean = true) {
     constructor(file: File, littleEndian: Boolean = true) : this(FileOutputStream(file), littleEndian)

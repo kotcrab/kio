@@ -1,6 +1,4 @@
 /*
- * Copyright 2017-2018 See AUTHORS file.
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -17,7 +15,18 @@
 package kio.util
 
 import com.google.common.io.BaseEncoding
-import com.google.gson.*
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import com.google.gson.JsonDeserializationContext
+import com.google.gson.JsonDeserializer
+import com.google.gson.JsonElement
+import com.google.gson.JsonObject
+import com.google.gson.JsonParseException
+import com.google.gson.JsonPrimitive
+import com.google.gson.JsonSerializationContext
+import com.google.gson.JsonSerializer
+import com.google.gson.TypeAdapter
+import com.google.gson.TypeAdapterFactory
 import com.google.gson.internal.Streams
 import com.google.gson.reflect.TypeToken
 import com.google.gson.stream.JsonReader
@@ -27,8 +36,6 @@ import java.io.Reader
 import java.lang.reflect.Type
 import kotlin.collections.set
 import kotlin.reflect.KClass
-
-/** @author Kotcrab */
 
 val stdGson = createStdGson()
 
@@ -77,7 +84,7 @@ inline fun <reified T> File.readJson(gson: Gson = stdGson): T {
 
 inline fun <reified T> File.readJsonOrElse(gson: Gson = stdGson, default: () -> T): T {
     return if (exists()) {
-        bufferedReader().use { gson.fromJson<T>(it) }
+        bufferedReader().use { gson.fromJson(it) }
     } else {
         default()
     }
@@ -85,7 +92,7 @@ inline fun <reified T> File.readJsonOrElse(gson: Gson = stdGson, default: () -> 
 
 inline fun <reified T> File.readJsonOrDefault(gson: Gson = stdGson, default: T): T {
     return if (exists()) {
-        bufferedReader().use { gson.fromJson<T>(it) }
+        bufferedReader().use { gson.fromJson(it) }
     } else {
         default
     }
@@ -150,7 +157,7 @@ class RuntimeTypeAdapterFactory<T : Any>(
     }
 
     override fun <R> create(gson: Gson, type: TypeToken<R>): TypeAdapter<R>? {
-        if (baseType.java.isAssignableFrom(type.rawType) == false) return null
+        if (!baseType.java.isAssignableFrom(type.rawType)) return null
         if (cachedTypeAdapter == null) {
             val labelToDelegate = mutableMapOf<String, TypeAdapter<out T>>()
             val legacyLabelToDelegate = mutableMapOf<String, TypeAdapter<out T>>()
@@ -168,6 +175,7 @@ class RuntimeTypeAdapterFactory<T : Any>(
                 override fun write(output: JsonWriter, value: R) {
                     val srcType = (value as Any)::class
                     val label = subtypeToLabel[srcType]
+
                     @Suppress("UNCHECKED_CAST") // registration requires that subtype extends T
                     val delegate = subtypeToDelegate[srcType] as TypeAdapter<R>?
                         ?: throw JsonParseException(
@@ -194,6 +202,7 @@ class RuntimeTypeAdapterFactory<T : Any>(
                             "cannot deserialize $baseType because it does not define a field named $typeFieldName"
                         )
                     val label = labelJsonElement.asString
+
                     @Suppress("UNCHECKED_CAST") // registration requires that subtype extends T
                     var delegate = labelToDelegate[label] as TypeAdapter<R>?
                     if (delegate == null) {

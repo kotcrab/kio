@@ -1,6 +1,4 @@
 /*
- * Copyright 2017-2018 See AUTHORS file.
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -18,8 +16,6 @@ package kio
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-
-/** @author Kotcrab */
 
 class BitInputStreamTest {
     private val testBytes = byteArrayOf(0b01100001, 0b01111111, 0b00000000, 0b01101000)

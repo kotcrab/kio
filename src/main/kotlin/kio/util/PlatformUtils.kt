@@ -1,6 +1,4 @@
 /*
- * Copyright 2017-2018 See AUTHORS file.
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -26,8 +24,6 @@ import java.io.PrintStream
 import java.net.URLDecoder
 import java.nio.charset.Charset
 import java.util.Collections
-
-/** @author Kotcrab */
 
 private val windows932Charset = Charset.forName("windows-932")
 private val shiftJisCharset = Charset.forName("Shift_JIS")
@@ -97,7 +93,7 @@ fun getJarPath(caller: Class<*>): String {
     val url = caller.protectionDomain.codeSource.location
     var path = URLDecoder.decode(url.file, "UTF-8")
     // remove jar name from path and cut first '/' when on Windows
-    path = if (System.getProperty("os.name").toLowerCase().contains("win")) {
+    path = if (System.getProperty("os.name").lowercase().contains("win")) {
         path.substring(1, path.lastIndexOf('/'))
     } else {
         path.substring(0, path.lastIndexOf('/'))

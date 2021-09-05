@@ -1,6 +1,4 @@
 /*
- * Copyright 2017-2018 See AUTHORS file.
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -18,8 +16,6 @@ package kio
 
 import kio.util.isBitSet
 import kio.util.toInt
-
-/** @author Kotcrab */
 
 class BitInputStream(private val bytes: ByteArray, private val msbOrder: Boolean = true) {
     private var currentByte = bytes[0]

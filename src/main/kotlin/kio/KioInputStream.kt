@@ -1,6 +1,4 @@
 /*
- * Copyright 2017-2018 See AUTHORS file.
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -20,10 +18,15 @@ import com.google.common.io.CountingInputStream
 import com.google.common.io.LittleEndianDataInputStream
 import kio.util.toUnsignedInt
 import kio.util.toWHex
-import java.io.*
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
+import java.io.DataInput
+import java.io.DataInputStream
+import java.io.File
+import java.io.FileInputStream
+import java.io.FilterInputStream
+import java.io.InputStream
 import java.nio.charset.Charset
-
-/** @author Kotcrab */
 
 class KioInputStream(baseStream: InputStream, val size: Long, littleEndian: Boolean = true) {
     constructor(file: File, littleEndian: Boolean = true)
@@ -169,11 +172,12 @@ class KioInputStream(baseStream: InputStream, val size: Long, littleEndian: Bool
         setPos(absOffset)
     }
 
-    fun temporaryJump(addr: Int, reader: (KioInputStream) -> Unit) {
+    fun <T> temporaryJump(addr: Int, reader: (KioInputStream) -> T): T {
         val lastPos = pos()
         setPos(addr)
-        reader(this)
+        val result = reader(this)
         setPos(lastPos)
+        return result
     }
 
     fun skip(n: Int) {

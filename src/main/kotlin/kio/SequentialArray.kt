@@ -1,6 +1,4 @@
 /*
- * Copyright 2017-2018 See AUTHORS file.
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -16,10 +14,8 @@
 
 package kio
 
-/** @author Kotcrab */
-
-class SequentialArrayReader(public val bytes: ByteArray) {
-    public var pos = 0
+class SequentialArrayReader(val bytes: ByteArray) {
+    var pos = 0
         private set
     val size = bytes.size
 
@@ -38,8 +34,8 @@ class SequentialArrayReader(public val bytes: ByteArray) {
     }
 }
 
-class SequentialArrayWriter(public val bytes: ByteArray) {
-    public var pos = 0
+class SequentialArrayWriter(val bytes: ByteArray) {
+    var pos = 0
         private set
     val size = bytes.size
 

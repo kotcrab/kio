@@ -1,4 +1,4 @@
-Basic IO utilities useful when working on binary files
+Basic IO utilities useful when working on binary files.
 
 #### Usage
 1. Add JitPack repository
