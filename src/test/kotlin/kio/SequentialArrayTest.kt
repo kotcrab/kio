@@ -18,55 +18,55 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 class SequentialArrayReaderTest {
-    private val bytes = byteArrayOf(0, 1, 2, 3)
+  private val bytes = byteArrayOf(0, 1, 2, 3)
 
-    @Test
-    fun `should read bytes`() {
-        val seq = SequentialArrayReader(bytes)
-        assertThat(seq.pos).isEqualTo(0)
-        assertThat(seq.size).isEqualTo(bytes.size)
-        assertThat(seq.read()).isEqualTo(0)
-        assertThat(seq.read()).isEqualTo(1)
-        assertThat(seq.read()).isEqualTo(2)
-        assertThat(seq.read()).isEqualTo(3)
-        assertThat(seq.pos).isEqualTo(bytes.size)
-    }
+  @Test
+  fun `should read bytes`() {
+    val seq = SequentialArrayReader(bytes)
+    assertThat(seq.pos).isEqualTo(0)
+    assertThat(seq.size).isEqualTo(bytes.size)
+    assertThat(seq.read()).isEqualTo(0)
+    assertThat(seq.read()).isEqualTo(1)
+    assertThat(seq.read()).isEqualTo(2)
+    assertThat(seq.read()).isEqualTo(3)
+    assertThat(seq.pos).isEqualTo(bytes.size)
+  }
 
-    @Test
-    fun `should read multiple bytes`() {
-        val seq = SequentialArrayReader(bytes)
-        assertThat(seq.pos).isEqualTo(0)
-        assertThat(seq.size).isEqualTo(bytes.size)
-        assertThat(seq.read(bytes.size)).containsExactly(*bytes)
-        assertThat(seq.pos).isEqualTo(bytes.size)
-    }
+  @Test
+  fun `should read multiple bytes`() {
+    val seq = SequentialArrayReader(bytes)
+    assertThat(seq.pos).isEqualTo(0)
+    assertThat(seq.size).isEqualTo(bytes.size)
+    assertThat(seq.read(bytes.size)).containsExactly(*bytes)
+    assertThat(seq.pos).isEqualTo(bytes.size)
+  }
 }
 
 class SequentialArrayWriterTest {
-    @Test
-    fun `should write bytes`() {
-        val bytes = ByteArray(4)
-        val seq = SequentialArrayWriter(bytes)
-        assertThat(seq.pos).isEqualTo(0)
-        assertThat(seq.size).isEqualTo(bytes.size)
-        seq.write(0)
-        seq.write(1)
-        seq.write(2)
-        seq.write(3)
-        assertThat(seq[0]).isEqualTo(0)
-        assertThat(seq.pos).isEqualTo(bytes.size)
-        assertThat(bytes).containsExactly(0, 1, 2, 3)
-    }
+  @Test
+  fun `should write bytes`() {
+    val bytes = ByteArray(4)
+    val seq = SequentialArrayWriter(bytes)
+    assertThat(seq.pos).isEqualTo(0)
+    assertThat(seq.size).isEqualTo(bytes.size)
+    seq.write(0)
+    seq.write(1)
+    seq.write(2)
+    seq.write(3)
+    assertThat(seq[0]).isEqualTo(0)
+    assertThat(seq.pos).isEqualTo(bytes.size)
+    assertThat(bytes).containsExactly(0, 1, 2, 3)
+  }
 
-    @Test
-    fun `should write multiple bytes`() {
-        val bytes = ByteArray(4)
-        val seq = SequentialArrayWriter(bytes)
-        assertThat(seq.pos).isEqualTo(0)
-        assertThat(seq.size).isEqualTo(bytes.size)
-        seq.write(byteArrayOf(0, 1, 2, 3))
-        assertThat(seq[0]).isEqualTo(0)
-        assertThat(seq.pos).isEqualTo(bytes.size)
-        assertThat(bytes).containsExactly(0, 1, 2, 3)
-    }
+  @Test
+  fun `should write multiple bytes`() {
+    val bytes = ByteArray(4)
+    val seq = SequentialArrayWriter(bytes)
+    assertThat(seq.pos).isEqualTo(0)
+    assertThat(seq.size).isEqualTo(bytes.size)
+    seq.write(byteArrayOf(0, 1, 2, 3))
+    assertThat(seq[0]).isEqualTo(0)
+    assertThat(seq.pos).isEqualTo(bytes.size)
+    assertThat(bytes).containsExactly(0, 1, 2, 3)
+  }
 }
