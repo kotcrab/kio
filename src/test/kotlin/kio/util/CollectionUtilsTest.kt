@@ -17,7 +17,7 @@ package kio.util
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-class PlatformUtilsTest {
+class CollectionUtilsTest {
   @Test
   fun `should pad array`() {
     assertThat(padArray(ByteArray(0), 4)).hasSize(0)
@@ -74,5 +74,10 @@ class PlatformUtilsTest {
     sb.appendLine("foo", newLine = "\r\n")
     assertThat(sb.toString()).isEqualTo("foo\r\n")
   }
-}
 
+  @Test
+  fun `should return sub array pos`() {
+    val arr = byteArrayOf(0, 0, 0, 1, 2, 3, 0, 0, 3, 2)
+    assertThat(getSubArrayPos(arr, byteArrayOf(1, 2, 3))).isEqualTo(3)
+  }
+}

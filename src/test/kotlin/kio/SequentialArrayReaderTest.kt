@@ -41,32 +41,3 @@ class SequentialArrayReaderTest {
     assertThat(seq.pos).isEqualTo(bytes.size)
   }
 }
-
-class SequentialArrayWriterTest {
-  @Test
-  fun `should write bytes`() {
-    val bytes = ByteArray(4)
-    val seq = SequentialArrayWriter(bytes)
-    assertThat(seq.pos).isEqualTo(0)
-    assertThat(seq.size).isEqualTo(bytes.size)
-    seq.write(0)
-    seq.write(1)
-    seq.write(2)
-    seq.write(3)
-    assertThat(seq[0]).isEqualTo(0)
-    assertThat(seq.pos).isEqualTo(bytes.size)
-    assertThat(bytes).containsExactly(0, 1, 2, 3)
-  }
-
-  @Test
-  fun `should write multiple bytes`() {
-    val bytes = ByteArray(4)
-    val seq = SequentialArrayWriter(bytes)
-    assertThat(seq.pos).isEqualTo(0)
-    assertThat(seq.size).isEqualTo(bytes.size)
-    seq.write(byteArrayOf(0, 1, 2, 3))
-    assertThat(seq[0]).isEqualTo(0)
-    assertThat(seq.pos).isEqualTo(bytes.size)
-    assertThat(bytes).containsExactly(0, 1, 2, 3)
-  }
-}

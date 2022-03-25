@@ -14,12 +14,7 @@
 
 package kio.util
 
-import kio.LERandomAccessFile
-import java.io.ByteArrayOutputStream
-import java.io.DataInput
 import java.io.File
-import java.io.RandomAccessFile
-import java.nio.charset.Charset
 import java.nio.file.Paths
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
@@ -36,16 +31,22 @@ fun File.toRelativeNixPath(base: File): String {
 }
 
 fun File.relativizePath(base: File): String {
-  val pathAbsolute = Paths.get(this.absolutePath.toString())
+  val pathAbsolute = Paths.get(absolutePath.toString())
   val pathBase = Paths.get(base.absolutePath.toString())
   val pathRelative = pathBase.relativize(pathAbsolute)
   var path = pathRelative.toString().replace("\\", "/")
-  if (this.isDirectory) path += "/"
+  if (isDirectory) {
+    path += "/"
+  }
   return path
 }
 
-fun walkDir(dir: File, processFile: (File) -> Unit, errorHandler: (File, Exception) -> Unit = { _, e -> throw(e) }) {
-  dir.listFiles()!!.forEach {
+fun walkDir(
+  dir: File,
+  errorHandler: (File, Exception) -> Unit = { _, e -> throw(e) },
+  processFile: (File) -> Unit,
+) {
+  dir.listFiles()?.forEach {
     if (it.isFile) {
       try {
         processFile(it)
@@ -53,193 +54,9 @@ fun walkDir(dir: File, processFile: (File) -> Unit, errorHandler: (File, Excepti
         errorHandler(it, e)
       }
     } else {
-      walkDir(it, processFile, errorHandler)
+      walkDir(it, errorHandler, processFile)
     }
   }
-}
-
-fun RandomAccessFile.align(pad: Long) {
-  if (length() % pad == 0L) return
-  val targetCount = (length() / pad + 1) * pad
-  write(ByteArray((targetCount - length()).toInt()))
-}
-
-fun LERandomAccessFile.align(pad: Long) {
-  if (length() % pad == 0L) return
-  val targetCount = (length() / pad + 1) * pad
-  write(ByteArray((targetCount - length()).toInt()))
-}
-
-fun RandomAccessFile.readString(size: Int, charset: Charset = Charsets.UTF_8): String {
-  return readBytes(size).toString(charset)
-}
-
-fun LERandomAccessFile.readString(size: Int, charset: Charset = Charsets.UTF_8): String {
-  return readBytes(size).toString(charset)
-}
-
-fun RandomAccessFile.writeString(string: String, charset: Charset = Charsets.UTF_8) {
-  write(string.toByteArray(charset))
-}
-
-fun LERandomAccessFile.writeString(string: String, charset: Charset = Charsets.UTF_8) {
-  write(string.toByteArray(charset))
-}
-
-fun RandomAccessFile.readNullTerminatedString(charset: Charset = Charsets.US_ASCII): String {
-  val out = ByteArrayOutputStream()
-  while (true) {
-    val byte = readByte().toInt()
-    if (byte == 0) break
-    out.write(byte)
-  }
-  return String(out.toByteArray(), charset)
-}
-
-fun LERandomAccessFile.readNullTerminatedString(charset: Charset = Charsets.US_ASCII): String {
-  val out = ByteArrayOutputStream()
-  while (true) {
-    val byte = readByte().toInt()
-    if (byte == 0) break
-    out.write(byte)
-  }
-  return String(out.toByteArray(), charset)
-}
-
-fun RandomAccessFile.writeNullTerminatedString(string: String, charset: Charset = Charsets.UTF_8) {
-  writeString(string, charset)
-  writeByte(0)
-}
-
-fun LERandomAccessFile.writeNullTerminatedString(string: String, charset: Charset = Charsets.UTF_8) {
-  writeString(string, charset)
-  writeByte(0)
-}
-
-fun RandomAccessFile.readBytes(n: Int): ByteArray {
-  val bytes = ByteArray(n)
-  read(bytes)
-  return bytes
-}
-
-fun LERandomAccessFile.readBytes(n: Int): ByteArray {
-  val bytes = ByteArray(n)
-  read(bytes)
-  return bytes
-}
-
-fun RandomAccessFile.skipNullBytes() {
-  skipByte(0)
-}
-
-fun LERandomAccessFile.skipNullBytes() {
-  skipByte(0)
-}
-
-fun RandomAccessFile.skipByte(byteToSkip: Int) {
-  while (true) {
-    if (filePointer == length()) return
-    val byte = readByte().toUnsignedInt()
-    if (byte != byteToSkip) {
-      seek(filePointer - 1L)
-      return
-    }
-  }
-}
-
-fun LERandomAccessFile.skipByte(byteToSkip: Int) {
-  while (true) {
-    if (filePointer == length()) return
-    val byte = readByte().toUnsignedInt()
-    if (byte != byteToSkip) {
-      seek(filePointer - 1L)
-      return
-    }
-  }
-}
-
-fun DataInput.readNullTerminatedString(charset: Charset = Charsets.US_ASCII): String {
-  val out = ByteArrayOutputStream()
-  while (true) {
-    val byte = readByte().toInt()
-    if (byte == 0) break
-    out.write(byte)
-  }
-  return String(out.toByteArray(), charset)
-}
-
-fun <T> RandomAccessFile.temporaryJump(addr: Int, reader: (RandomAccessFile) -> T): T {
-  return temporaryJump(addr.toLong(), reader)
-}
-
-fun <T> RandomAccessFile.temporaryJump(addr: Long, reader: (RandomAccessFile) -> T): T {
-  val lastPos = filePointer
-  seek(addr)
-  val result = reader(this)
-  seek(lastPos)
-  return result
-}
-
-fun <T> LERandomAccessFile.temporaryJump(addr: Int, reader: (LERandomAccessFile) -> T): T {
-  return temporaryJump(addr.toLong(), reader)
-}
-
-fun <T> LERandomAccessFile.temporaryJump(addr: Long, reader: (LERandomAccessFile) -> T): T {
-  val lastPos = filePointer
-  seek(addr)
-  val result = reader(this)
-  seek(lastPos)
-  return result
-}
-
-fun RandomAccessFile.seek(pos: Int) {
-  seek(pos.toLong())
-}
-
-fun LERandomAccessFile.seek(pos: Int) {
-  seek(pos.toLong())
-}
-
-fun getSubArrayPos(data: ByteArray, needle: ByteArray, startFrom: Int = 0): Int {
-  outer@ for (i in startFrom..data.size - needle.size) {
-    for (j in needle.indices) {
-      if (data[i + j] != needle[j]) {
-        continue@outer
-      }
-    }
-    return i
-  }
-  return -1
-}
-
-fun RandomAccessFile.getSubArrayPos(needle: ByteArray, startFrom: Int = 0): Long {
-  seek(0)
-  val needleInts = needle.map { it.toUnsignedInt() }
-  outer@ for (i in startFrom..length() - needle.size) {
-    for (j in needle.indices) {
-      seek(i + j)
-      if (read() != needleInts[j]) {
-        continue@outer
-      }
-    }
-    return i
-  }
-  return -1
-}
-
-fun LERandomAccessFile.getSubArrayPos(needle: ByteArray, startFrom: Int = 0): Long {
-  seek(0)
-  val needleInts = needle.map { it.toUnsignedInt() }
-  outer@ for (i in startFrom..length() - needle.size) {
-    for (j in needle.indices) {
-      seek(i + j)
-      if (read() != needleInts[j]) {
-        continue@outer
-      }
-    }
-    return i
-  }
-  return -1
 }
 
 fun readableFileSize(size: Long): String {

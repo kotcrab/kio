@@ -35,43 +35,49 @@ fun Int.toSignedHex(): String {
 }
 
 fun Byte.isBitSet(bit: Int): Boolean {
-  if (bit >= 8 || bit < 0) throw IllegalArgumentException("out of range, bit must be <8 and >=0")
+  checkInRange(bit, 0, 8)
   return (this.toUnsignedInt()) and (1 shl bit) != 0
 }
 
 fun Byte.setBit(bit: Int): Byte {
-  if (bit >= 8 || bit < 0) throw IllegalArgumentException("out of range, bit must be <8 and >=0")
+  checkInRange(bit, 0, 8)
   return (this.toUnsignedInt() or (1 shl bit)).toByte()
 }
 
 fun Byte.toggleBit(bit: Int): Byte {
-  if (bit >= 8 || bit < 0) throw IllegalArgumentException("out of range, bit must be <8 and >=0")
+  checkInRange(bit, 0, 8)
   return (this.toUnsignedInt() xor (1 shl bit)).toByte()
 }
 
 fun Byte.resetBit(bit: Int): Byte {
-  if (bit >= 8 || bit < 0) throw IllegalArgumentException("out of range, bit must be <8 and >=0")
+  checkInRange(bit, 0, 8)
   return (this.toUnsignedInt() and (1 shl bit).inv()).toByte()
 }
 
 fun Int.isBitSet(bit: Int): Boolean {
-  if (bit >= 32 || bit < 0) throw IllegalArgumentException("out of range, bit must be <32 and >=0")
+  checkInRange(bit, 0, 32)
   return this and (1 shl bit) != 0
 }
 
 fun Int.setBit(bit: Int): Int {
-  if (bit >= 32 || bit < 0) throw IllegalArgumentException("out of range, bit must be <32 and >=0")
+  checkInRange(bit, 0, 32)
   return this or (1 shl bit)
 }
 
 fun Int.toggleBit(bit: Int): Int {
-  if (bit >= 32 || bit < 0) throw IllegalArgumentException("out of range, bit must be <32 and >=0")
+  checkInRange(bit, 0, 32)
   return this xor (1 shl bit)
 }
 
 fun Int.resetBit(bit: Int): Int {
-  if (bit >= 32 || bit < 0) throw IllegalArgumentException("out of range, bit must be <32 and >=0")
+  checkInRange(bit, 0, 32)
   return this and (1 shl bit).inv()
+}
+
+private fun checkInRange(bit: Int, min: Int, max: Int) {
+  if (bit < min || bit >= max) {
+    throw IllegalArgumentException("Out of range, bit must be >=${min} and <${max}")
+  }
 }
 
 fun Byte.getBits(): BooleanArray {

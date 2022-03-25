@@ -55,17 +55,6 @@ fun createStdGson(
   return builder.create()
 }
 
-private class ByteArrayAsBase64TypeAdapter : JsonSerializer<ByteArray>, JsonDeserializer<ByteArray> {
-  @Throws(JsonParseException::class)
-  override fun deserialize(json: JsonElement, typeOfT: Type, context: JsonDeserializationContext): ByteArray {
-    return BaseEncoding.base64().decode(json.asString)
-  }
-
-  override fun serialize(src: ByteArray, typeOfSrc: Type, context: JsonSerializationContext): JsonElement {
-    return JsonPrimitive(BaseEncoding.base64().encode(src))
-  }
-}
-
 inline fun <reified T> Gson.fromJson(reader: Reader): T = this.fromJson(reader, object : TypeToken<T>() {}.type)
 
 inline fun <reified T> Gson.fromJson(json: String): T = this.fromJson(json, object : TypeToken<T>() {}.type)
@@ -83,26 +72,23 @@ inline fun <reified T> File.readJson(gson: Gson = stdGson): T {
 }
 
 inline fun <reified T> File.readJsonOrElse(gson: Gson = stdGson, default: () -> T): T {
-  return if (exists()) {
-    bufferedReader().use { gson.fromJson(it) }
-  } else {
-    default()
+  return when {
+    exists() -> bufferedReader().use { gson.fromJson(it) }
+    else -> default()
   }
 }
 
 inline fun <reified T> File.readJsonOrDefault(gson: Gson = stdGson, default: T): T {
-  return if (exists()) {
-    bufferedReader().use { gson.fromJson(it) }
-  } else {
-    default
+  return when {
+    exists() -> bufferedReader().use { gson.fromJson(it) }
+    else -> default
   }
 }
 
 inline fun <reified T> File.readJsonOrNull(gson: Gson = stdGson): T? {
-  return if (exists()) {
-    bufferedReader().use { gson.fromJson<T>(it) }
-  } else {
-    null
+  return when {
+    exists() -> bufferedReader().use { gson.fromJson<T>(it) }
+    else -> null
   }
 }
 
@@ -110,8 +96,9 @@ fun <C : Any> runtimeTypeAdapter(
   base: KClass<C>,
   subTypes: Array<KClass<out C>>,
   legacySubTypes: Array<Pair<String, KClass<out C>>> = emptyArray(),
+  typeFieldName: String = "_type",
 ): RuntimeTypeAdapterFactory<C> {
-  val adapter = RuntimeTypeAdapterFactory(base, "_type")
+  val adapter = RuntimeTypeAdapterFactory(base, typeFieldName)
   subTypes.forEach { subClass ->
     adapter.registerSubtype(subClass)
   }
@@ -131,16 +118,16 @@ class RuntimeTypeAdapterFactory<T : Any>(
   private var cachedTypeAdapter: TypeAdapter<*>? = null
 
   fun <R : T> registerSubtype(type: KClass<R>) {
-    val label = type.simpleName ?: error("type does not provide simple name")
+    val label = type.simpleName ?: error("Type does not provide simple name")
     registerSubtype(type, label)
   }
 
   fun <R : T> registerSubtype(type: KClass<R>, label: String) {
     if (cachedTypeAdapter != null) {
-      error("can't add subtype, this factory has already created and cached its type adapter")
+      error("Can't add subtype, this factory has already created and cached its type adapter")
     }
     if (subtypeToLabel.contains(type) || labelToSubtype.contains(label)) {
-      error("types and labels must be unique")
+      error("Types and labels must be unique")
     }
     subtypeToLabel[type] = label
     labelToSubtype[label] = type
@@ -148,10 +135,10 @@ class RuntimeTypeAdapterFactory<T : Any>(
 
   fun <R : T> registerLegacySubtype(type: KClass<R>, label: String) {
     if (cachedTypeAdapter != null) {
-      error("can't add legacy subtype, this factory has already created and cached its type adapter")
+      error("Can't add legacy subtype, this factory has already created and cached its type adapter")
     }
     if (legacyLabelToSubtype.contains(label)) {
-      error("legacy labels must be unique")
+      error("Legacy labels must be unique")
     }
     legacyLabelToSubtype[label] = type
   }
@@ -178,15 +165,11 @@ class RuntimeTypeAdapterFactory<T : Any>(
 
           @Suppress("UNCHECKED_CAST") // registration requires that subtype extends T
           val delegate = subtypeToDelegate[srcType] as TypeAdapter<R>?
-            ?: throw JsonParseException(
-              "cannot serialize ${srcType.simpleName}, did you forget to register a subtype?"
-            )
+            ?: throw JsonParseException("Cannot serialize ${srcType.simpleName}, did you forget to register a subtype?")
           val jsonObject = delegate.toJsonTree(value).asJsonObject
           val clone = JsonObject()
           if (jsonObject.has(typeFieldName)) {
-            throw JsonParseException(
-              "cannot serialize ${srcType.simpleName} because it already defined a field names $typeFieldName"
-            )
+            throw JsonParseException("Cannot serialize ${srcType.simpleName} because it already defined a field names $typeFieldName")
           }
           clone.add(typeFieldName, JsonPrimitive(label))
           jsonObject.entrySet().forEach { (key, value) ->
@@ -199,7 +182,7 @@ class RuntimeTypeAdapterFactory<T : Any>(
           val jsonElement = Streams.parse(input)
           val labelJsonElement = jsonElement.asJsonObject.remove(typeFieldName)
             ?: throw JsonParseException(
-              "cannot deserialize $baseType because it does not define a field named $typeFieldName"
+              "Cannot deserialize $baseType because it does not define a field named $typeFieldName"
             )
           val label = labelJsonElement.asString
 
@@ -209,9 +192,7 @@ class RuntimeTypeAdapterFactory<T : Any>(
             @Suppress("UNCHECKED_CAST") // registration requires that subtype extends T
             delegate = legacyLabelToDelegate[label] as TypeAdapter<R>?
             if (delegate == null) {
-              throw JsonParseException(
-                "cannot deserialize $baseType subtype named $label, did you forget to register a subtype?"
-              )
+              throw JsonParseException("Cannot deserialize $baseType subtype named $label, did you forget to register a subtype?")
             }
           }
           return delegate.fromJsonTree(jsonElement)
@@ -220,5 +201,16 @@ class RuntimeTypeAdapterFactory<T : Any>(
     }
     @Suppress("UNCHECKED_CAST") // cached adapter is only created in this function
     return cachedTypeAdapter as TypeAdapter<R>
+  }
+}
+
+private class ByteArrayAsBase64TypeAdapter : JsonSerializer<ByteArray>, JsonDeserializer<ByteArray> {
+  @Throws(JsonParseException::class)
+  override fun deserialize(json: JsonElement, typeOfT: Type, context: JsonDeserializationContext): ByteArray {
+    return BaseEncoding.base64().decode(json.asString)
+  }
+
+  override fun serialize(src: ByteArray, typeOfSrc: Type, context: JsonSerializationContext): JsonElement {
+    return JsonPrimitive(BaseEncoding.base64().encode(src))
   }
 }

@@ -29,10 +29,9 @@ class KioOutputStream(private val outputStream: OutputStream, littleEndian: Bool
   constructor(file: File, littleEndian: Boolean = true) : this(FileOutputStream(file), littleEndian)
 
   private val counter = CountingOutputStream(outputStream)
-  private val stream: FilterOutputStream = if (littleEndian) {
-    LittleEndianDataOutputStream(counter)
-  } else {
-    DataOutputStream(counter)
+  private val stream: FilterOutputStream = when {
+    littleEndian -> LittleEndianDataOutputStream(counter)
+    else -> DataOutputStream(counter)
   }
   private val output = stream as DataOutput
 
@@ -96,7 +95,9 @@ class KioOutputStream(private val outputStream: OutputStream, littleEndian: Bool
   }
 
   fun pos(): Int {
-    if (longPos() > Integer.MAX_VALUE) error("can't safely convert pos to int, use longPos")
+    if (longPos() > Integer.MAX_VALUE) {
+      error("Can't safely convert position to int, use longPos")
+    }
     return longPos().toInt()
   }
 

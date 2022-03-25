@@ -14,16 +14,11 @@
 
 package kio.util
 
-import com.google.common.io.ByteStreams
-import org.apache.commons.exec.CommandLine
-import org.apache.commons.exec.DefaultExecutor
-import org.apache.commons.exec.PumpStreamHandler
 import java.io.File
 import java.io.InputStream
 import java.io.PrintStream
 import java.net.URLDecoder
 import java.nio.charset.Charset
-import java.util.*
 
 private val windows932Charset = Charset.forName("windows-932")
 private val shiftJisCharset = Charset.forName("Shift_JIS")
@@ -39,88 +34,6 @@ val Charsets.WINDOWS_932: Charset
 val Charsets.SHIFT_JIS: Charset
   get() = shiftJisCharset
 
-fun execute(
-  executable: File,
-  args: List<*> = emptyList<Any>(),
-  environment: Map<String, String>? = null,
-  workingDirectory: File? = null,
-  exitValue: Int = 0,
-  streamHandler: PumpStreamHandler? = null,
-) {
-  execute(CommandLine(executable.absolutePath), args, environment, workingDirectory, exitValue, streamHandler)
-}
-
-fun execute(
-  executable: String,
-  args: List<*> = emptyList<Any>(),
-  environment: Map<String, String>? = null,
-  workingDirectory: File? = null,
-  exitValue: Int = 0,
-  streamHandler: PumpStreamHandler? = null,
-) {
-  execute(CommandLine(executable), args, environment, workingDirectory, exitValue, streamHandler)
-}
-
-private fun execute(
-  cmdLine: CommandLine,
-  args: List<*> = emptyList<Any>(),
-  environment: Map<String, String>? = null,
-  workingDirectory: File? = null,
-  exitValue: Int = 0,
-  streamHandler: PumpStreamHandler? = null,
-) {
-  args.forEachIndexed { index, _ ->
-    cmdLine.addArgument("\${arg$index}")
-  }
-  val map = mutableMapOf<String, Any?>()
-  args.forEachIndexed { index, arg ->
-    map["arg$index"] = arg
-  }
-  cmdLine.substitutionMap = map
-  val executor = DefaultExecutor()
-  if (workingDirectory != null) executor.workingDirectory = workingDirectory
-  if (streamHandler != null) executor.streamHandler = streamHandler
-  executor.setExitValue(exitValue)
-  executor.execute(cmdLine, environment)
-}
-
-@Suppress("UnstableApiUsage")
-fun nullStreamHandler() = PumpStreamHandler(ByteStreams.nullOutputStream(), ByteStreams.nullOutputStream())
-
-fun stdoutStreamHandler() = PumpStreamHandler(stdout, stdout)
-
-fun getJarPath(caller: Class<*>): String {
-  val url = caller.protectionDomain.codeSource.location
-  var path = URLDecoder.decode(url.file, "UTF-8")
-  // remove jar name from path and cut first '/' when on Windows
-  path = if (System.getProperty("os.name").lowercase().contains("win")) {
-    path.substring(1, path.lastIndexOf('/'))
-  } else {
-    path.substring(0, path.lastIndexOf('/'))
-  }
-  path = path.replace("/", File.separator)
-  return path + File.separator
-}
-
-fun padArray(src: ByteArray, pad: Int = 16): ByteArray {
-  if (src.size % pad == 0) return src
-  val targetSize = (src.size / pad + 1) * pad
-  val dest = ByteArray(targetSize)
-  arrayCopy(src = src, dest = dest)
-  return dest
-}
-
-fun arrayCopy(src: ByteArray, srcPos: Int = 0, dest: ByteArray, destPos: Int = 0, length: Int = src.size) {
-  System.arraycopy(src, srcPos, dest, destPos, length)
-}
-
-fun <T> MutableList<T>.swap(element1: T, element2: T) {
-  swap(indexOf(element1), indexOf(element2))
-}
-
-fun <T> MutableList<T>.swap(idx1: Int, idx2: Int) {
-  Collections.swap(this, idx1, idx2)
-}
 
 fun StringBuilder.appendLine(text: String = "", newLine: String = "\n") {
   append(text)
@@ -144,3 +57,16 @@ var stderr: PrintStream
   set(s) {
     System.setErr(s)
   }
+
+fun getJarPath(caller: Class<*>): String {
+  val url = caller.protectionDomain.codeSource.location
+  var path = URLDecoder.decode(url.file, "UTF-8")
+  // remove jar name from path and cut first '/' when on Windows
+  path = if (System.getProperty("os.name").lowercase().contains("win")) {
+    path.substring(1, path.lastIndexOf('/'))
+  } else {
+    path.substring(0, path.lastIndexOf('/'))
+  }
+  path = path.replace("/", File.separator)
+  return path + File.separator
+}

@@ -33,22 +33,3 @@ class SequentialArrayReader(val bytes: ByteArray) {
     return outBytes
   }
 }
-
-class SequentialArrayWriter(val bytes: ByteArray) {
-  var pos = 0
-    private set
-  val size = bytes.size
-
-  fun write(byte: Byte) {
-    bytes[pos] = byte
-    pos++
-  }
-
-  fun write(inBytes: ByteArray) {
-    inBytes.forEach { write(it) }
-  }
-
-  operator fun get(idx: Int): Byte {
-    return bytes[idx]
-  }
-}

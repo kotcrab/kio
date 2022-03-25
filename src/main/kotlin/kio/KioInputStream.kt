@@ -36,10 +36,9 @@ class KioInputStream(baseStream: InputStream, val size: Long, littleEndian: Bool
     : this(ByteArrayInputStream(bytes), bytes.size.toLong(), littleEndian)
 
   private val counter = CountingInputStream(baseStream)
-  private val stream: FilterInputStream = if (littleEndian) {
-    LittleEndianDataInputStream(counter)
-  } else {
-    DataInputStream(counter)
+  private val stream: FilterInputStream = when {
+    littleEndian -> LittleEndianDataInputStream(counter)
+    else -> DataInputStream(counter)
   }
   private val input: DataInput = stream as DataInput
 
@@ -200,7 +199,9 @@ class KioInputStream(baseStream: InputStream, val size: Long, littleEndian: Bool
   }
 
   fun pos(): Int {
-    if (longPos() > Integer.MAX_VALUE) error("can't safely convert pos to int, use longPos")
+    if (longPos() > Integer.MAX_VALUE) {
+      error("Can't safely convert position to int, use longPos")
+    }
     return longPos().toInt()
   }
 

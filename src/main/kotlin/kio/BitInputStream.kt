@@ -27,7 +27,9 @@ class BitInputStream(private val bytes: ByteArray, private val msbOrder: Boolean
     private set
 
   fun readBit(): Boolean {
-    if (eof) error("no more bytes to read")
+    if (eof) {
+      error("No more bytes to read")
+    }
     val value = currentByte.isBitSet(if (msbOrder) 7 - posInCurrentByte else posInCurrentByte)
     posInCurrentByte++
     if (posInCurrentByte == 8) {
@@ -51,7 +53,9 @@ class BitInputStream(private val bytes: ByteArray, private val msbOrder: Boolean
   }
 
   fun readInt(bits: Int = 32): Int {
-    if (bits > 32) error("bits must be <=32")
+    if (bits > 32) {
+      error("Bits must be <=32")
+    }
     var value = 0
     repeat(bits) {
       value = value or (readBit().toInt() shl (bits - 1 - it))

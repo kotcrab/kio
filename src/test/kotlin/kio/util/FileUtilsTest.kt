@@ -41,12 +41,6 @@ class FileUtilsTest {
   }
 
   @Test
-  fun `should return sub array pos`() {
-    val arr = byteArrayOf(0, 0, 0, 1, 2, 3, 0, 0, 3, 2)
-    assertThat(getSubArrayPos(arr, byteArrayOf(1, 2, 3))).isEqualTo(3)
-  }
-
-  @Test
   fun `should return readable file size`() {
     assertThatIllegalArgumentException().isThrownBy { readableFileSize(-1) }
     assertThat(readableFileSize(0)).isEqualTo("0 B")

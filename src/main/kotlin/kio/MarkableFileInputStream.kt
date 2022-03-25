@@ -40,7 +40,7 @@ internal class MarkableFileInputStream(fis: FileInputStream) : FilterInputStream
   @Throws(IOException::class)
   override fun reset() {
     if (mark == -1L) {
-      throw IOException("not marked")
+      throw IOException("Not marked")
     }
     fileChannel.position(mark)
   }
